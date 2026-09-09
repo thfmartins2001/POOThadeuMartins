@@ -1,0 +1,192 @@
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class ListaExcecoes {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // =====================================================
+        // 1)
+        // =====================================================
+
+        System.out.println("===== QUESTÃO 1 - DIVISÃO SEGURA =====");
+
+        try {
+            System.out.print("Digite o primeiro número inteiro: ");
+            int primeiroNumero = scanner.nextInt();
+
+            System.out.print("Digite o segundo número inteiro: ");
+            int segundoNumero = scanner.nextInt();
+
+            int resultado = primeiroNumero / segundoNumero;
+
+            System.out.println("Resultado da divisão: " + resultado);
+
+        } catch (ArithmeticException e) {
+            System.out.println("Erro: não é possível dividir por zero.");
+
+        } catch (InputMismatchException e) {
+            System.out.println("Erro: digite apenas números inteiros.");
+
+        } finally {
+            System.out.println("Fim da operação.");
+        }
+
+
+        // =====================================================
+        // 2)
+        // =====================================================
+
+        System.out.println("\n===== QUESTÃO 2 - ACESSO AO ARRAY =====");
+
+        String[] cidades = {
+            "São Paulo",
+            "Rio de Janeiro",
+            "Belo Horizonte",
+            "Curitiba",
+            "Salvador"
+        };
+
+        try {
+            System.out.print("Digite um número de 0 a 4: ");
+            int indice = scanner.nextInt();
+
+            System.out.println("Cidade escolhida: " + cidades[indice]);
+
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println(
+                "Erro: esse índice não existe. Digite um número entre 0 e 4."
+            );
+        }
+
+
+        // =====================================================
+        // 3)
+        // =====================================================
+
+        System.out.println("\n===== QUESTÃO 3 - VALIDAÇÃO DE IDADE =====");
+
+        try {
+            System.out.print("Digite a idade da pessoa: ");
+            int idade = scanner.nextInt();
+
+            if (idade < 0 || idade > 150) {
+                throw new IdadeInvalidaException(
+                    "A idade deve estar entre 0 e 150 anos."
+                );
+            }
+
+            System.out.println("Idade válida: " + idade);
+
+        } catch (IdadeInvalidaException e) {
+            System.out.println("Erro: " + e.getMessage());
+        }
+
+
+        // =====================================================
+        // 4)
+        // =====================================================
+
+        System.out.println("\n===== QUESTÃO 4 - CONVERSOR NUMÉRICO =====");
+
+        String texto = "abc";
+
+        try {
+            int numeroConvertido = converterParaInteiro(texto);
+
+            System.out.println("Número convertido: " + numeroConvertido);
+
+        } catch (NumberFormatException e) {
+            System.out.println(
+                "Erro: o texto informado não é um número inteiro válido."
+            );
+        }
+
+
+        // =====================================================
+        // 5)
+        // =====================================================
+
+        System.out.println("\n===== QUESTÃO 5 - CONTA BANCÁRIA =====");
+
+        ContaBancaria conta = new ContaBancaria(500.00);
+
+        try {
+            System.out.println("Tentando sacar R$ 200,00...");
+            conta.sacar(200.00);
+
+            System.out.println("\nTentando sacar R$ 400,00...");
+            conta.sacar(400.00);
+
+        } catch (SaldoInsuficienteException e) {
+            System.out.println("Erro: " + e.getMessage());
+        }
+
+        scanner.close();
+    }
+
+
+    // =========================================================
+    // MÉTODO DA QUESTÃO 4
+    // =========================================================
+
+    public static int converterParaInteiro(String texto)
+            throws NumberFormatException {
+
+        return Integer.parseInt(texto);
+    }
+
+
+    // =========================================================
+    // EXCEÇÃO PERSONALIZADA DA QUESTÃO 3
+    // =========================================================
+
+    static class IdadeInvalidaException extends RuntimeException {
+
+        public IdadeInvalidaException(String mensagem) {
+            super(mensagem);
+        }
+    }
+
+
+    // =========================================================
+    // EXCEÇÃO PERSONALIZADA DA QUESTÃO 5
+    // =========================================================
+
+    static class SaldoInsuficienteException extends RuntimeException {
+
+        public SaldoInsuficienteException(String mensagem) {
+            super(mensagem);
+        }
+    }
+
+
+    // =========================================================
+    // CLASSE CONTA BANCÁRIA DA QUESTÃO 5
+    // =========================================================
+
+    static class ContaBancaria {
+
+        private double saldo;
+
+        public ContaBancaria(double saldoInicial) {
+            this.saldo = saldoInicial;
+        }
+
+        public void sacar(double valor) {
+            if (valor > saldo) {
+                throw new SaldoInsuficienteException(
+                    "Saldo insuficiente para realizar esse saque."
+                );
+            }
+
+            saldo -= valor;
+
+            System.out.println("Saque realizado com sucesso.");
+            System.out.println(
+                "Saldo atual: R$ " + String.format("%.2f", saldo)
+            );
+        }
+    }
+}
